@@ -12,19 +12,12 @@ int	len_without_whitespaces(char *argv)
 	while (argv[i])
 	{
 		quotes = handle_quotes(argv[i], quotes);
-		if (ft_iswhitespace(argv[i]) == SUCCESS && quotes == ERROR)
-		{
-			if (i - 1 == 0 || ft_iswhitespace(argv[i - 1]) == ERROR)
-			{
-				len++;
-			}
-		}
-		else
+		if (add_whitespace(argv[i], argv[i - 1], quotes) == SUCCESS)
+			len++;
+		else if (ft_iswhitespace(argv[i]) == ERROR)
 			len++;
 		i++;
 	}
-	printf("i = %d\n", i);
-	printf("len = %d", len);
 	return (len);
 }
 

@@ -16,7 +16,7 @@ int	add_whitespace(char b, char a, int quotes)
 {
 	if (ft_iswhitespace(b) == SUCCESS && quotes == ERROR)
 	{
-		if (a == 0 || ft_iswhitespace(a) == ERROR)
+		if (ft_iswhitespace(a) == ERROR)
 			return (SUCCESS);
 	}
 	return (ERROR);
@@ -38,20 +38,10 @@ char	*rm_whitespaces(char *argv, int size)
 	while (argv[i])
 	{
 		quotes = handle_quotes(argv[i], quotes);
-		if (ft_iswhitespace(argv[i]) == SUCCESS && quotes == ERROR)
-		{
-			if (i - 1 == 0 || ft_iswhitespace(argv[i - 1]) == ERROR)
-			{
-				str[j] = ' ';
-				j++;
-			}
-		}
-		else
-		{
-			str[j] = argv[i];
-			printf("str[%d] : %c\n", j, str[j]);
-			j++;
-		}
+		if (add_whitespace(argv[i], argv[i - 1], quotes) == SUCCESS)
+			str[j++] = ' ';
+		else if (ft_iswhitespace(argv[i]) == ERROR)
+			str[j++] = argv[i];
 		i++;
 	}
 	str[j] = '\0';
@@ -62,12 +52,13 @@ int	handle_operators(char *args, int i)
 {
 	if (ft_is_operator(args[i]) == SUCCESS)
 	{
-		if (ft_isalnum(args[i - 1]) == SUCCESS || ft_isalnum(args[i
-				+ 1]) == SUCCESS)
-		{
-			if (ft_isalnum(args[i - 1]) == SUCCESS || args[i - 1] != '-')
-				return (SUCCESS);
-		}
+		if (ft_isalnum(args[i - 1]) == SUCCESS)
+			return (SUCCESS);
+	}
+	else if (ft_isalnum(args[i]) == SUCCESS)
+	{
+		if (ft_is_operator(args[i - 1]) == SUCCESS)
+			return (SUCCESS);
 	}
 	return (ERROR);
 }
@@ -97,7 +88,6 @@ char	*separate_commands(char *args, int size)
 	str[j] = '\0';
 	return (str);
 }
-
 char	*handle_whitespaces(char *argv)
 {
 	int		size;
