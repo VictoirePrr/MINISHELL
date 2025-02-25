@@ -64,7 +64,7 @@ void	print_stack(t_stack **stack)
 	printf("\n");
 	while (1)
 	{
-		printf("node[%d] : %s\n", i, temp->token);
+		printf("token[%d] : %s\n", i, temp->token);
 		i++;
 		temp = temp->next;
 		if (temp == *stack)

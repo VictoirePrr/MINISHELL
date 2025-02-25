@@ -40,7 +40,7 @@ char	*rm_whitespaces(char *argv, int size)
 		quotes = handle_quotes(argv[i], quotes);
 		if (add_whitespace(argv[i], argv[i - 1], quotes) == SUCCESS)
 			str[j++] = ' ';
-		else if (ft_iswhitespace(argv[i]) == ERROR)
+		else if (ft_iswhitespace(argv[i]) == ERROR || quotes == SUCCESS)
 			str[j++] = argv[i];
 		i++;
 	}
@@ -57,7 +57,7 @@ int	handle_operators(char *args, int i)
 	}
 	else if (ft_isalnum(args[i]) == SUCCESS)
 	{
-		if (ft_is_operator(args[i - 1]) == SUCCESS)
+		if (ft_is_operator(args[i - 1]) == SUCCESS && args[i - 1] != '-')
 			return (SUCCESS);
 	}
 	return (ERROR);
@@ -97,11 +97,11 @@ char	*handle_whitespaces(char *argv)
 	if (check_num_of_quotes(argv) == ERROR)
 		return (NULL);
 	size = len_without_whitespaces(argv) + 1;
-	printf("size w/ spaces : [%d]\n", size);
+	// printf("[DEBUG] size w/ spaces : [%d]\n", size);
 	args = rm_whitespaces(argv, size);
 	args_trim = ft_strtrim(args, " ");
 	free(args);
-	printf("args w/ spaces : [%s]\n", args_trim);
+	// printf("[DEBUG] args w/ spaces : [%s]\n", args_trim);
 	return (args_trim);
 }
 
@@ -111,9 +111,9 @@ char	*handle_commands(char *args)
 	char	*args_cleaned;
 
 	size = len_for_cleaned_args(args) + 1;
-	printf("size w proper spaces : [%d]\n", size);
+	// printf("[DEBUG]size w proper spaces : [%d]\n", size);
 	args_cleaned = separate_commands(args, size);
-	printf("args cleaned : [%s]\n", args_cleaned);
+	// printf("[DEBUG] args cleaned : [%s]\n", args_cleaned);
 	return (args_cleaned);
 }
 
@@ -121,6 +121,9 @@ int	parsing_argv(char **argv)
 {
 	char	*args;
 	char	*args_cleaned;
+	char	**args_split;
+	t_stack	*stack;
+	int		i;
 
 	if (!argv[1])
 		return (ERROR);
@@ -140,31 +143,20 @@ int	parsing_argv(char **argv)
 		return (ERROR);
 	}
 	free(args);
+	stack = NULL;
+	i = 0;
+	args_split = ft_split(args_cleaned, ' ');
+	while (args_split[i])
+	{
+		fill_the_list(args_split[i], &stack);
+		i++;
+	}
+	print_stack(&stack);
 	return (SUCCESS);
 }
 
-// whatever_you_call_this_shit
-//	char	**args_split;
-// t_stack	*stack;
-// int		i;
-// stack = NULL;
-// i = 0;
-// args_split = minishell_split(args);
-// while (args[i])
-// {
-// 	printf("args[%d] : %s\n", i, args[i]);
-// 	fill_the_list(args[i], &stack);
-// 	i++;
-// }
-// print_stack(&stack);
-
 int	main(int argc, char **argv, char **env)
 {
-	// break each commands into tokens
-	// apply precedence : highest first and lowest at last
-	// (you just regroup the commands between them)
-	// and put it in a tree ? ask rico.
-	// then define the execution order : left to right.
 	(void)env;
 	(void)argc;
 	if (parsing_argv(argv) == ERROR)

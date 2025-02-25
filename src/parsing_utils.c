@@ -14,7 +14,7 @@ int	len_without_whitespaces(char *argv)
 		quotes = handle_quotes(argv[i], quotes);
 		if (add_whitespace(argv[i], argv[i - 1], quotes) == SUCCESS)
 			len++;
-		else if (ft_iswhitespace(argv[i]) == ERROR)
+		else if (ft_iswhitespace(argv[i]) == ERROR || quotes == SUCCESS)
 			len++;
 		i++;
 	}
@@ -43,7 +43,7 @@ int	check_num_of_quotes(char *argv)
 	}
 	if (single_quote % 2 != 0 || double_quote % 2 != 0)
 	{
-		ft_printf("ERROR : quotes");
+		ft_printf("ERROR : quotes aren't in pairs");
 		return (ERROR);
 	}
 	return (SUCCESS);
