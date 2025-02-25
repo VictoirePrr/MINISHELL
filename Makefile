@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: vicperri <vicperri@student.42lyon.fr>      +#+  +:+       +#+         #
+#    By: pnaessen <pnaessen@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/12 12:55:24 by vicperri          #+#    #+#              #
-#    Updated: 2025/02/20 15:01:37 by vicperri         ###   ########lyon.fr    #
+#    Updated: 2025/02/25 14:18:43 by pnaessen         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,6 +15,7 @@ NAME    =  minishell
 CC := cc
 CPPFLAGS = -MMD -MP
 CCFLAGS := -Wall -Wextra -Werror -g3
+LDFLAGS := -lreadline
 SRC_DIR := src/
 INCLUDES:= include/
 SRC := $(addprefix $(SRC_DIR), parsing.c list_utils.c parsing_utils.c parsing_char_utils.c)
@@ -46,7 +47,7 @@ PURPLE=\033[35m
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJ)
-	$(CC) $(CCFLAGS) $(OBJ) $(LIBFT_FLAG) -o $(NAME)
+	$(CC) $(CCFLAGS) $(OBJ) $(LIBFT_FLAG) -o $(NAME) $(LDFLAGS)
 	 @echo "$(PURPLE) ✨ $(NAME) compiled ✨$(DEF_COLOR)"
 	$(MAKE) kitty
 	

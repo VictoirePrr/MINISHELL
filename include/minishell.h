@@ -9,6 +9,8 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <readline/history.h>
+# include <readline/readline.h>
 
 # define ERROR 1
 # define SUCCESS 0
@@ -25,7 +27,7 @@ int					add_whitespace(char b, char a, int quotes);
 int					handle_quotes(char argv, int quotes);
 
 // parsing
-int					parsing_argv(char **argv);
+int					parsing_argv(char *argv);
 char				*separate_commands(char *args, int size);
 char				*rm_whitespaces(char *argv, int size);
 

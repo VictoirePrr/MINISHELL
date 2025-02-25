@@ -117,7 +117,7 @@ char	*handle_commands(char *args)
 	return (args_cleaned);
 }
 
-int	parsing_argv(char **argv)
+int	parsing_argv(char *input)
 {
 	char	*args;
 	char	*args_cleaned;
@@ -125,9 +125,9 @@ int	parsing_argv(char **argv)
 	t_stack	*stack;
 	int		i;
 
-	if (!argv[1])
+	if (!input)
 		return (ERROR);
-	args = handle_whitespaces(argv[1]);
+	args = handle_whitespaces(input);
 	if (!args)
 	{
 		free(args);
@@ -155,11 +155,32 @@ int	parsing_argv(char **argv)
 	return (SUCCESS);
 }
 
-int	main(int argc, char **argv, char **env)
+int	main(int argc, char **env)
 {
+	char	*input;
+
 	(void)env;
-	(void)argc;
-	if (parsing_argv(argv) == ERROR)
-		return (ERROR);
+	if (argc != 1)
+	{
+		printf("Usage : minishell doesn't take argument\n");
+		return (0);
+	}
+	while (1)
+	{
+		input = readline("minishell$ ");
+		if (!input)
+		{
+			printf("exit\n");
+			exit(0);
+		}
+		if (*input)
+			add_history(input);
+		if (parsing_argv(input) == ERROR)
+		{
+			free(input);
+			return (ERROR);
+		}
+		free(input);
+	}
 	return (0);
 }
