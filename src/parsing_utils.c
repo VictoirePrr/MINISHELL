@@ -74,3 +74,16 @@ int	len_for_cleaned_args(char *args)
 	}
 	return (len + i);
 }
+void ft_free_all(char **args)
+{
+	size_t	i;
+
+	i = 0;
+	while (args[i])
+	{
+		free(args[i]);
+		args[i] = NULL;
+		i++;
+	}
+	free(args);
+}

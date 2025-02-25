@@ -23,26 +23,26 @@ void	rot_lstadd_back(t_stack **stack, t_stack *new_node)
 	}
 }
 
-t_stack	*node_init(char *token)
+t_stack	*node_init(char **cmd)
 {
 	t_stack	*new_node;
 
 	new_node = (t_stack *)malloc(sizeof(t_stack));
 	if (!(new_node))
 		return (NULL);
-	new_node->token = token;
+	new_node->cmd = cmd;
 	new_node->next = NULL;
 	new_node->prev = NULL;
 	return (new_node);
 }
 
-int	fill_the_list(char *token, t_stack **stack)
+int	fill_the_list(char **cmd, t_stack **stack)
 {
 	t_stack	*new_node;
 
-	new_node = node_init(token);
+	new_node = node_init(cmd);
 	if (!new_node)
-		return (1);
+		return (ERROR);
 	if (!*stack)
 	{
 		*stack = new_node;
@@ -51,7 +51,7 @@ int	fill_the_list(char *token, t_stack **stack)
 	}
 	else
 		rot_lstadd_back(stack, new_node);
-	return (0);
+	return (SUCCESS);
 }
 
 void	print_stack(t_stack **stack)
@@ -64,7 +64,7 @@ void	print_stack(t_stack **stack)
 	printf("\n");
 	while (1)
 	{
-		printf("token[%d] : %s\n", i, temp->token);
+		//printf("cmd[%d] : [%s]\n", i, temp->cmd);
 		i++;
 		temp = temp->next;
 		if (temp == *stack)

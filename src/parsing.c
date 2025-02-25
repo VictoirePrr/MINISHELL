@@ -113,7 +113,7 @@ char	*handle_commands(char *args)
 	size = len_for_cleaned_args(args) + 1;
 	// printf("[DEBUG]size w proper spaces : [%d]\n", size);
 	args_cleaned = separate_commands(args, size);
-	// printf("[DEBUG] args cleaned : [%s]\n", args_cleaned);
+	printf("[DEBUG] args cleaned : [%s]\n", args_cleaned);
 	return (args_cleaned);
 }
 
@@ -121,37 +121,50 @@ int	parsing_argv(char **argv)
 {
 	char	*args;
 	char	*args_cleaned;
-	char	**args_split;
-	t_stack	*stack;
-	int		i;
 
 	if (!argv[1])
 		return (ERROR);
 	args = handle_whitespaces(argv[1]);
 	if (!args)
 	{
-		free(args);
 		printf("[DEBUG] error when handling whitespace\n");
 		return (ERROR);
 	}
 	args_cleaned = handle_commands(args);
+	free(args);
 	if (!args_cleaned)
 	{
 		printf("[DEBUG] error when handling commands\n");
-		free(args_cleaned);
-		free(args);
 		return (ERROR);
 	}
-	free(args);
+	if (split_and_list_args(args_cleaned) == ERROR)
+	{
+		printf("[DEBUG] error when handling listing\n");
+		return (ERROR);
+	}
+	return (SUCCESS);
+}
+
+int	split_and_list_args(char *args_cleaned)
+{
+	char	**args_split;
+	int		i;
+	t_stack	*stack;
+
 	stack = NULL;
 	i = 0;
-	args_split = ft_split(args_cleaned, ' ');
+	args_split = minishell_split(args_cleaned, ' ');
 	while (args_split[i])
 	{
-		fill_the_list(args_split[i], &stack);
+		printf("args split[%d] : [%s]\n", i, args_split[i]);
+		// if (fill_the_list(args_split[i], &stack) == ERROR)
+		// {
+		// 	ft_free_all(args_split);
+		// 	return (ERROR);
+		// }
 		i++;
 	}
-	print_stack(&stack);
+//	print_stack(&stack);
 	return (SUCCESS);
 }
 
