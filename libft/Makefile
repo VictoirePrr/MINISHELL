@@ -6,7 +6,7 @@
 #    By: vicperri <vicperri@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/12 12:55:24 by vicperri          #+#    #+#              #
-#    Updated: 2024/12/11 16:05:30 by vicperri         ###   ########lyon.fr    #
+#    Updated: 2025/02/26 16:29:26 by vicperri         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ OBJDIR = .obj
 OBJS = $(addprefix $(OBJDIR)/,$(SRCS:.c=.o))
 
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall
+CFLAGS = -Wall -Wextra -Werror
 AR = ar -rcs
 
 $(OBJDIR)/%.o: %.c libft.h

@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-char	**ft_free(char **res)
+static char	**ft_free(char **res)
 {
 	size_t	i;
 
@@ -15,7 +15,7 @@ char	**ft_free(char **res)
 	return (0);
 }
 
-size_t	ft_reslen(const char *s1, char c)
+static size_t	ft_reslen(const char *s1, char c)
 {
 	size_t	i;
 	size_t	count;
@@ -37,7 +37,7 @@ size_t	ft_reslen(const char *s1, char c)
 	return (count);
 }
 
-size_t	ft_countword(const char *s1, size_t i, char c)
+static size_t	ft_countword(const char *s1, size_t i, char c)
 {
 	size_t	count;
 	int		quotes;
@@ -49,18 +49,16 @@ size_t	ft_countword(const char *s1, size_t i, char c)
 	while (s1[i])
 	{
 		quotes = handle_quotes(s1[i], quotes);
-		printf("quotes : %d\n", quotes);
 		if (s1[i] == c && quotes == ERROR)
 			return (count);
 		else
-			//		if (ft_is_quotes(s1[i]) == ERROR)
 			count++;
 		i++;
 	}
 	return (count);
 }
 
-char	*ft_newtab(const char *s1, size_t size, size_t i)
+static char	*ft_newtab(const char *s1, size_t size, size_t i)
 {
 	char	*dup;
 	size_t	j;
@@ -71,11 +69,8 @@ char	*ft_newtab(const char *s1, size_t size, size_t i)
 		return (0);
 	while (j < size && s1[i])
 	{
-		if (ft_is_quotes(s1[i]) == ERROR)
-		{
 			dup[j] = s1[i];
 			j++;
-		}
 		i++;
 	}
 	dup[j] = '\0';
@@ -85,9 +80,11 @@ char	*ft_newtab(const char *s1, size_t size, size_t i)
 char	**minishell_split(char const *s, char c)
 {
 	char	**res;
+	int		quotes;
 	size_t	i;
 	size_t	j;
 
+	quotes = ERROR;
 	i = 0;
 	j = 0;
 	if (!(s))
@@ -96,12 +93,11 @@ char	**minishell_split(char const *s, char c)
 	if (!(res))
 		return (0);
 	res[ft_reslen(s, c)] = NULL;
-	printf("size of res : %lu\n", ft_reslen(s, c) + 1);
 	while (s[i] && j < ft_reslen(s, c))
 	{
-		if (s[i] != c)
+		quotes = handle_quotes(s[i], quotes);
+		if (s[i] != c || quotes == SUCCESS)
 		{
-			printf("size of countword : %lu\n", ft_countword(s, i, c));
 			res[j] = ft_newtab(s, ft_countword(s, i, c), i);
 			if (!(res[j]))
 				return (ft_free(res));

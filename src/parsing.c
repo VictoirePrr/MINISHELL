@@ -97,11 +97,9 @@ char	*handle_whitespaces(char *argv)
 	if (check_num_of_quotes(argv) == ERROR)
 		return (NULL);
 	size = len_without_whitespaces(argv) + 1;
-	// printf("[DEBUG] size w/ spaces : [%d]\n", size);
 	args = rm_whitespaces(argv, size);
 	args_trim = ft_strtrim(args, " ");
 	free(args);
-	// printf("[DEBUG] args w/ spaces : [%s]\n", args_trim);
 	return (args_trim);
 }
 
@@ -111,7 +109,6 @@ char	*handle_commands(char *args)
 	char	*args_cleaned;
 
 	size = len_for_cleaned_args(args) + 1;
-	// printf("[DEBUG]size w proper spaces : [%d]\n", size);
 	args_cleaned = separate_commands(args, size);
 	printf("[DEBUG] args cleaned : [%s]\n", args_cleaned);
 	return (args_cleaned);
@@ -145,26 +142,61 @@ int	parsing_argv(char *input)
 	return (SUCCESS);
 }
 
-int	split_and_list_args(char *args_cleaned)
+char	find_operator(char *args_cleaned)
 {
-	char	**args_split;
+	int	i;
+
+	i = 0;
+	while (args_cleaned[i])
+	{
+		if (ft_is_operator(args_cleaned[i]) == SUCCESS)
+			return (args_cleaned[i]);
+		i++;
+	}
+	return (ERROR);
+}
+
+int	list_args(char **args_split, int operator)
+{
 	int		i;
 	t_stack	*stack;
 
 	stack = NULL;
 	i = 0;
-	args_split = minishell_split(args_cleaned, ' ');
-	while (args_split[i])
+	if (!(operator== ERROR))
+		while (args_split[i])
+		{
+			if (fill_the_list(minishell_split(args_split[i], ' '),
+					&stack) == ERROR)
+			{
+				ft_free_all(args_split);
+				return (ERROR);
+			}
+			i++;
+		}
+	else
 	{
-		printf("args split[%d] : [%s]\n", i, args_split[i]);
-		// if (fill_the_list(args_split[i], &stack) == ERROR)
-		// {
-		// 	ft_free_all(args_split);
-		// 	return (ERROR);
-		// }
-		i++;
+		if (fill_the_list(args_split, &stack) == ERROR)
+		{
+			ft_free_all(args_split);
+			return (ERROR);
+		}
 	}
-//	print_stack(&stack);
+	print_stack(&stack);
+	return (SUCCESS);
+}
+
+int	split_and_list_args(char *args_cleaned)
+{
+	char	**args_split;
+	char	operator;
+
+	operator= find_operator(args_cleaned);
+	if (operator== ERROR)
+		args_split = minishell_split(args_cleaned, ' ');
+	else
+		args_split = ft_split(args_cleaned, operator);
+	list_args(args_split, operator);
 	return (SUCCESS);
 }
 

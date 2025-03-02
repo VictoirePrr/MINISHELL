@@ -59,13 +59,18 @@ void	print_stack(t_stack **stack)
 	t_stack	*temp;
 	int		i;
 
-	i = 0;
 	temp = *stack;
 	printf("\n");
 	while (1)
 	{
-		//printf("cmd[%d] : [%s]\n", i, temp->cmd);
-		i++;
+		i = 0;
+		printf("-----------------------------\n");
+		while (temp->cmd[i])
+		{
+			printf("cmd[%d] : [%s]\n", i, temp->cmd[i]);
+			i++;
+		}
+		printf("-----------------------------\n");
 		temp = temp->next;
 		if (temp == *stack)
 			break ;
