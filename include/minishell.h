@@ -60,6 +60,7 @@ void				ft_free_all(char **args);
 int					ft_iswhitespace(int c);
 int					ft_is_operator(int c);
 int					ft_is_quotes(char c);
+char				find_operator(char *args_cleaned);
 
 // list_utils
 int					fill_the_list(char **cmd, t_stack **stack);
@@ -68,6 +69,6 @@ void				rot_lstadd_back(t_stack **stack, t_stack *new_node);
 void				print_stack(t_stack **stack);
 
 // minishell_split
-char				**minishell_split(char const *s, char c);
+char				**minishell_split(char const *s);
 
 #endif

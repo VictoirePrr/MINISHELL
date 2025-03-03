@@ -156,47 +156,48 @@ char	find_operator(char *args_cleaned)
 	return (ERROR);
 }
 
-int	list_args(char **args_split, int operator)
-{
-	int		i;
-	t_stack	*stack;
+// int	list_args(char **args_split)
+// {
+// 	int		i;
+// 	t_stack	*stack;
 
-	stack = NULL;
-	i = 0;
-	if (!(operator== ERROR))
-		while (args_split[i])
-		{
-			if (fill_the_list(minishell_split(args_split[i], ' '),
-					&stack) == ERROR)
-			{
-				ft_free_all(args_split);
-				return (ERROR);
-			}
-			i++;
-		}
-	else
-	{
-		if (fill_the_list(args_split, &stack) == ERROR)
-		{
-			ft_free_all(args_split);
-			return (ERROR);
-		}
-	}
-	print_stack(&stack);
-	return (SUCCESS);
-}
+// 	stack = NULL;
+// 	i = 0;
+// 	if (!(operator== ERROR))
+// 		while (args_split[i])
+// 		{
+// 			if (fill_the_list(minishell_split(args_split[i], ' '),
+// 					&stack) == ERROR)
+// 			{
+// 				ft_free_all(args_split);
+// 				return (ERROR);
+// 			}
+// 			i++;
+// 		}
+// 	else
+// 	{
+// 		if (fill_the_list(args_split, &stack) == ERROR)
+// 		{
+// 			ft_free_all(args_split);
+// 			return (ERROR);
+// 		}
+// 	}
+// 	print_stack(&stack);
+// 	return (SUCCESS);
+// }
 
 int	split_and_list_args(char *args_cleaned)
 {
 	char	**args_split;
-	char	operator;
 
-	operator= find_operator(args_cleaned);
-	if (operator== ERROR)
-		args_split = minishell_split(args_cleaned, ' ');
-	else
-		args_split = ft_split(args_cleaned, operator);
-	list_args(args_split, operator);
+	args_split = minishell_split(args_cleaned);
+	int i = 0;
+	while (args_split[i])
+	{
+		printf("args : [%s]\n", args_split[i]);
+		i++;
+	}
+	// list_args(args_split);
 	return (SUCCESS);
 }
 
