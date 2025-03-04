@@ -1,120 +1,29 @@
 #include "minishell.h"
 
-int	handle_quotes(char argv, int quotes)
+int	tokenise_args(char *args_cleaned)
 {
-	if (ft_is_quotes(argv) == SUCCESS)
-	{
-		if (quotes == SUCCESS)
-			quotes = ERROR;
-		else
-			quotes = SUCCESS;
-	}
-	return (quotes);
-}
-
-int	add_whitespace(char b, char a, int quotes)
-{
-	if (ft_iswhitespace(b) == SUCCESS && quotes == ERROR)
-	{
-		if (ft_iswhitespace(a) == ERROR)
-			return (SUCCESS);
-	}
-	return (ERROR);
-}
-
-char	*rm_whitespaces(char *argv, int size)
-{
-	char	*str;
-	int		quotes;
+	char	**token;
 	int		i;
-	int		j;
+	t_stack	*stack;
 
+	token = pre_tokenisation(args_cleaned);
+	stack = NULL;
 	i = 0;
-	j = 0;
-	quotes = ERROR;
-	str = malloc(size * sizeof(char));
-	if (!str)
-		return (NULL);
-	while (argv[i])
+	while (token[i])
 	{
-		quotes = handle_quotes(argv[i], quotes);
-		if (add_whitespace(argv[i], argv[i - 1], quotes) == SUCCESS)
-			str[j++] = ' ';
-		else if (ft_iswhitespace(argv[i]) == ERROR || quotes == SUCCESS)
-			str[j++] = argv[i];
-		i++;
-	}
-	str[j] = '\0';
-	return (str);
-}
-
-int	handle_operators(char *args, int i)
-{
-	if (ft_is_operator(args[i]) == SUCCESS)
-	{
-		if (ft_isalnum(args[i - 1]) == SUCCESS)
-			return (SUCCESS);
-	}
-	else if (ft_isalnum(args[i]) == SUCCESS)
-	{
-		if (ft_is_operator(args[i - 1]) == SUCCESS && args[i - 1] != '-')
-			return (SUCCESS);
-	}
-	return (ERROR);
-}
-
-char	*separate_commands(char *args, int size)
-{
-	char	*str;
-	int		i;
-	int		j;
-
-	i = 0;
-	j = 0;
-	str = malloc(size * sizeof(char));
-	if (!str)
-		return (NULL);
-	while (args[i])
-	{
-		if (handle_operators(args, i) == SUCCESS)
+		if (fill_the_list(tokenisation(token[i]), &stack) == ERROR)
 		{
-			str[j] = ' ';
-			j++;
+			ft_free_all(token);
+			return (ERROR);
 		}
-		str[j] = args[i];
-		j++;
 		i++;
 	}
-	str[j] = '\0';
-	return (str);
-}
-char	*handle_whitespaces(char *argv)
-{
-	int		size;
-	char	*args;
-	char	*args_trim;
-
-	if (check_num_of_quotes(argv) == ERROR)
-		return (NULL);
-	size = len_without_whitespaces(argv) + 1;
-	args = rm_whitespaces(argv, size);
-	args_trim = ft_strtrim(args, " ");
-	free(args);
-	return (args_trim);
+	identify_token_type(&stack);
+	print_stack(&stack);
+	return (SUCCESS);
 }
 
-char	*handle_commands(char *args)
-{
-	int		size;
-	char	*args_cleaned;
-
-	size = len_for_cleaned_args(args) + 1;
-	args_cleaned = separate_commands(args, size);
-	printf("[DEBUG] args cleaned : [%s]\n", args_cleaned);
-	return (args_cleaned);
-}
-
-int	parsing_argv(char *input)
+int	parsing_input(char *input)
 {
 	char	*args;
 	char	*args_cleaned;
@@ -123,81 +32,14 @@ int	parsing_argv(char *input)
 		return (ERROR);
 	args = handle_whitespaces(input);
 	if (!args)
-	{
 		printf("[DEBUG] error when handling whitespace\n");
-		return (ERROR);
-	}
+	return (ERROR);
 	args_cleaned = handle_commands(args);
 	free(args);
 	if (!args_cleaned)
-	{
-		printf("[DEBUG] error when handling commands\n");
 		return (ERROR);
-	}
-	if (split_and_list_args(args_cleaned) == ERROR)
-	{
-		printf("[DEBUG] error when handling listing\n");
+	if (tokenise_args(args_cleaned) == ERROR)
 		return (ERROR);
-	}
-	return (SUCCESS);
-}
-
-char	find_operator(char *args_cleaned)
-{
-	int	i;
-
-	i = 0;
-	while (args_cleaned[i])
-	{
-		if (ft_is_operator(args_cleaned[i]) == SUCCESS)
-			return (args_cleaned[i]);
-		i++;
-	}
-	return (ERROR);
-}
-
-// int	list_args(char **args_split)
-// {
-// 	int		i;
-// 	t_stack	*stack;
-
-// 	stack = NULL;
-// 	i = 0;
-// 	if (!(operator== ERROR))
-// 		while (args_split[i])
-// 		{
-// 			if (fill_the_list(minishell_split(args_split[i], ' '),
-// 					&stack) == ERROR)
-// 			{
-// 				ft_free_all(args_split);
-// 				return (ERROR);
-// 			}
-// 			i++;
-// 		}
-// 	else
-// 	{
-// 		if (fill_the_list(args_split, &stack) == ERROR)
-// 		{
-// 			ft_free_all(args_split);
-// 			return (ERROR);
-// 		}
-// 	}
-// 	print_stack(&stack);
-// 	return (SUCCESS);
-// }
-
-int	split_and_list_args(char *args_cleaned)
-{
-	char	**args_split;
-
-	args_split = minishell_split(args_cleaned);
-	int i = 0;
-	while (args_split[i])
-	{
-		printf("args : [%s]\n", args_split[i]);
-		i++;
-	}
-	// list_args(args_split);
 	return (SUCCESS);
 }
 
@@ -221,7 +63,7 @@ int	main(int argc, char **env)
 		}
 		if (*input)
 			add_history(input);
-		if (parsing_argv(input) == ERROR)
+		if (parsing_input(input) == ERROR)
 		{
 			free(input);
 			return (ERROR);

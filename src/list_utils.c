@@ -67,7 +67,7 @@ void	print_stack(t_stack **stack)
 		printf("-----------------------------\n");
 		while (temp->cmd[i])
 		{
-			printf("cmd[%d] : [%s]\n", i, temp->cmd[i]);
+			printf("cmd[%d] : [%s] || type : %d\n", i, temp->cmd[i], temp->token);
 			i++;
 		}
 		printf("-----------------------------\n");
