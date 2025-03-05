@@ -7,7 +7,7 @@ LDFLAGS := -lreadline
 SRC_DIR := src/
 INCLUDES:= include/
 SRC := $(addprefix $(SRC_DIR), parsing.c list_utils.c parsing_utils.c handle_commands.c \
-	handle_whitespace.c pre_tokenisation.c tokenisation.c)
+	handle_whitespace.c pre_tokenisation.c tokenisation.c identify_tokens.c)
 
 OBJ_DIR := .obj/
 OBJ := $(SRC:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)
