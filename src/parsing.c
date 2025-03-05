@@ -13,6 +13,7 @@ int	tokenise_args(char *args_cleaned)
 	{
 		if (fill_the_list(tokenisation(token[i]), &stack) == ERROR)
 		{
+			printf("DEBUG : in fill the lst");
 			ft_free_all(token);
 			return (ERROR);
 		}
@@ -32,14 +33,16 @@ int	parsing_input(char *input)
 		return (ERROR);
 	args = handle_whitespaces(input);
 	if (!args)
-		printf("[DEBUG] error when handling whitespace\n");
-	return (ERROR);
+		return (ERROR);
 	args_cleaned = handle_commands(args);
 	free(args);
 	if (!args_cleaned)
 		return (ERROR);
 	if (tokenise_args(args_cleaned) == ERROR)
+	{
+		printf("DEBUG : tokenisation");
 		return (ERROR);
+	}
 	return (SUCCESS);
 }
 

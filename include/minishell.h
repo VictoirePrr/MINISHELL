@@ -71,6 +71,10 @@ t_stack				*node_init(char **cmd);
 void				rot_lstadd_back(t_stack **stack, t_stack *new_node);
 void				print_stack(t_stack **stack);
 
+// identify tokens
+int					identify_token_type(t_stack **stack);
+void				define_type(t_stack *temp, char *cmd, int quotes);
+
 // minishell_split
 char				**pre_tokenisation(char const *s);
 char				**tokenisation(char const *s);
