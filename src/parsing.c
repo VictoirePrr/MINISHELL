@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	tokenise_args(char *args_cleaned)
+t_stack	*tokenise_args(char *args_cleaned)
 {
 	char	**token;
 	int		i;
@@ -15,35 +15,37 @@ int	tokenise_args(char *args_cleaned)
 		{
 			printf("DEBUG : in fill the lst");
 			ft_free_all(token);
-			return (ERROR);
+			return (NULL);
 		}
 		i++;
 	}
 	identify_token_type(&stack);
 	print_stack(&stack);
-	return (SUCCESS);
+	return (stack);
 }
 
-int	parsing_input(char *input)
+t_stack	*parsing_input(char *input)
 {
 	char	*args;
 	char	*args_cleaned;
+	t_stack	*stack;
 
 	if (!input)
-		return (ERROR);
+		return (NULL);
 	args = handle_whitespaces(input);
 	if (!args)
-		return (ERROR);
+		return (NULL);
 	args_cleaned = handle_commands(args);
 	free(args);
 	if (!args_cleaned)
-		return (ERROR);
-	if (tokenise_args(args_cleaned) == ERROR)
+		return (NULL);
+	stack = tokenise_args(args_cleaned);
+	if (!stack)
 	{
 		printf("DEBUG : tokenisation");
-		return (ERROR);
+		return (NULL);
 	}
-	return (SUCCESS);
+	return (stack);
 }
 
 int	main(int argc, char **env)
@@ -66,7 +68,7 @@ int	main(int argc, char **env)
 		}
 		if (*input)
 			add_history(input);
-		if (parsing_input(input) == ERROR)
+		if (parsing_input(input) == NULL)
 		{
 			free(input);
 			return (ERROR);
